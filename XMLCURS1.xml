@@ -1,0 +1,45 @@
+<DataSet xmlns="http://www.bnr.ro/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.bnr.ro/xsd nbrfxrates.xsd">
+<Header>
+<Publisher>National Bank of Romania</Publisher>
+<PublishingDate>2022-03-04</PublishingDate>
+<MessageType>DR</MessageType>
+</Header>
+<Body>
+<Subject>Reference rates</Subject>
+<OrigCurrency>RON</OrigCurrency>
+<Cube date="2022-03-04">
+<Rate currency="AED">  <price value="1.2247" /></Rate>
+<Rate currency="AUD"><price value="3.3110" /></Rate>
+<Rate currency="BGN"><price value="2.5304" /></Rate>
+<Rate currency="BRL"><price value="0.8939" /></Rate>
+<Rate currency="CAD"><price value="3.5347" /></Rate>
+<Rate currency="CHF"><price value="4.8979" /></Rate>
+<Rate currency="CNY"><price value="0.7122" /></Rate>
+<Rate currency="CZK"><price value="0.1931" /></Rate>
+<Rate currency="DKK"><price value="0.6653" /></Rate>
+<Rate currency="EGP"><price value="0.2859" /></Rate>
+<Rate currency="EUR"><price value="4.9491" /></Rate>
+<Rate currency="GBP"><price value="5.9873" /></Rate>
+<Rate currency="HRK"><price value="0.6548" /></Rate>
+<Rate currency="HUF" multiplier="100"><price value="1.2938" /></Rate>
+<Rate currency="INR"><price value="0.0591" /></Rate>
+<Rate currency="JPY" multiplier="100"><price value="3.8983" /></Rate>
+<Rate currency="KRW" multiplier="100"><price value="0.3697" /></Rate>
+<Rate currency="MDL"><price value="0.2435" /></Rate>
+<Rate currency="MXN"><price value="0.2161" /></Rate>
+<Rate currency="NOK"><price value="0.5035" /></Rate>
+<Rate currency="NZD"><price value="3.0773" /></Rate>
+<Rate currency="PLN"><price value="1.0209" /></Rate>
+<Rate currency="RSD"><price value="0.0421" /></Rate>
+<Rate currency="RUB"><price value="0.0393" /></Rate>
+<Rate currency="SEK"><price value="0.4592" /></Rate>
+<Rate currency="THB"><price value="0.1377" /></Rate>
+<Rate currency="TRY"><price value="0.3159" /></Rate>
+<Rate currency="UAH"><price value="0.1467" /></Rate>
+<Rate currency="USD"><price value="4.4984" /></Rate>
+<Rate currency="XAU"><price value="281.5126" /></Rate>
+<Rate currency="XDR"><price value="6.2373" /></Rate>
+<Rate currency="ZAR"><price value="0.2934" /></Rate>
+</Cube>
+</Body>
+</DataSet>

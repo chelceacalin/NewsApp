@@ -1,0 +1,6 @@
+{
+    "username": "cristi",
+    "password": "cristi",
+    "driver": "jdbc:oracle:thin:@//localhost:1521/orcl",
+    "driverNume": "oracle.jdbc.driver.OracleDriver"
+}

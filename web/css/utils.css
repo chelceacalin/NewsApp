@@ -1,0 +1,13 @@
+:root{
+    --main-bg-color: linear-gradient(to right, #2c3e50, #4ca1af);
+}
+
+.bg-main{
+    
+    background: var(--main-bg-color);
+}
+
+.max-w-80{
+   max-width: 80%;
+}
+
