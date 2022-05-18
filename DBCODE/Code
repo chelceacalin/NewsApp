@@ -1,0 +1,433 @@
+SET SCAN OFF;
+
+DROP TABLE STIRI CASCADE CONSTRAINTS;
+DROP TABLE CATEGORII CASCADE CONSTRAINTS;
+DROP TABLE UTILIZATORI CASCADE CONSTRAINTS;
+DROP TABLE PREFERINTE CASCADE CONSTRAINTS;
+DROP TABLE AUTORI CASCADE CONSTRAINTS;
+DROP TABLE CONEXIUNE_AUTORI_STIRI CASCADE CONSTRAINTS;
+DROP TABLE COMENTARII CASCADE CONSTRAINTS;
+DROP TABLE CONEXIUNE_STIRI_MULTIMEDIA CASCADE CONSTRAINTS;
+DROP TABLE MULTIMEDIA CASCADE CONSTRAINTS;
+
+
+DROP SEQUENCE incr_id_categorie;
+DROP SEQUENCE incr_id_utilizator; 
+DROP SEQUENCE incr_id_stire;
+DROP SEQUENCE incr_id_multimedia; 
+DROP SEQUENCE incr_id_comentariu; 
+DROP SEQUENCE incr_id_autor;
+
+CREATE SEQUENCE incr_id_categorie START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE incr_id_utilizator START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE incr_id_stire START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE incr_id_multimedia START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE incr_id_comentariu START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE incr_id_autor START WITH 1 INCREMENT BY 1;
+
+ 
+
+
+CREATE TABLE STIRI(
+ID_STIRE NUMBER(10) CONSTRAINT ID_STIRE_PK PRIMARY KEY,
+NUME_STIRE VARCHAR2(280),
+CONTINUT_STIRE VARCHAR2(4000),
+DATA_POSTARII DATE,
+STARE_STIRE NUMBER(1) DEFAULT 0,
+ID_CATEGORIE NUMBER(3)
+
+);
+
+CREATE TABLE CATEGORII(
+ID_CATEGORIE NUMBER(3) CONSTRAINT ID_CATEGORIE_PK PRIMARY KEY,
+NUME_CATEGORIE  VARCHAR(40),
+STARE_CATEGORIE NUMBER(1)
+);
+
+
+CREATE TABLE UTILIZATORI(
+ID_UTILIZATOR NUMBER(10) CONSTRAINT ID_UTILIZATOR_PK PRIMARY KEY, 
+NUME VARCHAR(80),
+PRENUME VARCHAR(70),
+EMAIL VARCHAR(50) UNIQUE,
+PAROLA VARCHAR(50) UNIQUE,
+STARE NUMBER(1)
+);
+
+
+CREATE TABLE PREFERINTE(
+ID_UTILIZATOR NUMBER(3),
+ID_CATEGORIE NUMBER(3),
+CONSTRAINT ID_UTILIZATOR_FK1 FOREIGN KEY (ID_UTILIZATOR) REFERENCES UTILIZATORI(ID_UTILIZATOR),
+CONSTRAINT ID_CATEGORIE_FK1 FOREIGN KEY (ID_CATEGORIE) REFERENCES CATEGORII(ID_CATEGORIE),
+CONSTRAINT UTILIZATOR_CATEGORIE_FK PRIMARY KEY (ID_UTILIZATOR,ID_CATEGORIE)
+);
+
+
+CREATE TABLE AUTORI(
+ID_AUTOR NUMBER(3) CONSTRAINT ID_AUTOR_PK PRIMARY KEY,
+NUME VARCHAR2(80),
+PRENUME VARCHAR(70),
+EMAIL VARCHAR(50) UNIQUE,
+PAROLA VARCHAR(50) UNIQUE,
+DATA_INREGISTRARII DATE,
+STARE_AUTOR NUMBER(1) DEFAULT 1
+);
+
+CREATE TABLE CONEXIUNE_AUTORI_STIRI(
+ID_AUTOR NUMBER(3),
+ID_STIRE NUMBER(10),
+CONSTRAINT ID_AUTOR_FK FOREIGN KEY(ID_AUTOR) REFERENCES AUTORI(ID_AUTOR),
+CONSTRAINT ID_STIRE_FK FOREIGN KEY (ID_STIRE) REFERENCES STIRI(ID_STIRE),
+CONSTRAINT AUTOR_STIRE_PK PRIMARY KEY(ID_AUTOR,ID_STIRE)
+);
+
+CREATE TABLE COMENTARII(
+ID_COMENTARIU NUMBER(20)  CONSTRAINT ID_COMENTARIU_PK PRIMARY KEY,
+CONTINUT VARCHAR(400),
+DATA_COMENTARIU DATE DEFAULT CURRENT_DATE,
+STARE_COMENTARIU  NUMBER(1) DEFAULT 1,
+ID_UTILIZATOR NUMBER(10), CONSTRAINT ID_UTILIZATOR_FK FOREIGN KEY(ID_UTILIZATOR) REFERENCES UTILIZATORI(ID_UTILIZATOR),
+ID_STIRE NUMBER(10), CONSTRAINT FK_ID_STIRE FOREIGN KEY (ID_STIRE) REFERENCES STIRI(ID_STIRE)
+);
+
+CREATE TABLE MULTIMEDIA(
+ID_MULTIMEDIA NUMBER(12)  CONSTRAINT ID_MULTIMEDIA_PK PRIMARY KEY,
+URL VARCHAR(300),
+TIP_MULTIMEDIA VARCHAR(10),
+VIZIBILITATE NUMBER(1)
+
+);
+
+CREATE TABLE CONEXIUNE_STIRI_MULTIMEDIA(
+ID_STIRE NUMBER(10) NOT NULL,
+CONSTRAINT CONEXIUNE_FK_ID_STIRE FOREIGN KEY (ID_STIRE) REFERENCES STIRI(ID_STIRE),
+ID_MULTIMEDIA NUMBER(12), CONSTRAINT ID_MULTIMEDIA_FK FOREIGN KEY(ID_MULTIMEDIA) REFERENCES MULTIMEDIA(ID_MULTIMEDIA)
+
+);
+
+ALTER TABLE STIRI
+ADD CONSTRAINT STIRI_CATEGORII_FK FOREIGN KEY(ID_CATEGORIE) REFERENCES CATEGORII(ID_CATEGORIE);
+
+
+
+
+
+
+
+SET TRANSACTION NAME 'PopulareCategorii';
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Sport',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Incalzirea Globala',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Economie',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Politica',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Alegeri Prezidentiale',0);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Jocuri Olimpice',0);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Tehnologie',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Vreme',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Moda',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Educatie',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Business',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Alegerea editorului',1);
+INSERT INTO CATEGORII (Id_Categorie,Nume_Categorie,Stare_Categorie) VALUES (incr_id_categorie.nextval, 'Breaking news',1);
+COMMIT;
+
+
+SET TRANSACTION NAME 'PopulareUtilizatori';
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Coman','Emilia Florentina','coman@gmail.com', 'coman123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Chelcea','Calin','chelcea@gmail.com', 'chelcea123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Albu','Malina Teodora','albu@gmail.com', 'albu123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Constantin','Ioan','constantin@gmail.com', 'constantin123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Tarba','Sabin','tarba@gmail.com', 'tarba123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Petcu','Bogdan','petcubogdan@gmail.com', 'petcu123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Alexandru','Maria','alexandrum@gmail.com', 'alexandru123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Andronie','Rafael','andronier@gmail.com', 'andronie123', 1);
+INSERT INTO UTILIZATORI (ID_Utilizator,Nume,Prenume,Email, Parola, Stare) VALUES(incr_id_utilizator.nextval,'Zapada','Ion','zapadai@gmail.com', 'zapada123', 1);
+
+COMMIT;
+
+
+SET TRANSACTION NAME 'PopularePreferinte';
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (1,1);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (1,2);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (1,3);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (2,3);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (2,9);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (3,6);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (5,1);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (5,6);
+INSERT INTO PREFERINTE(ID_Utilizator,ID_Categorie) VALUES (5,7);
+COMMIT;
+
+
+
+SET TRANSACTION NAME 'PopulareStiri';
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Magnus este campion mondial pentru a 5 a oara','Neînvins după primele unsprezece runde din cele paisprezece prevăzute, Carlsen nu mai poate fi ajuns de adversarul său. El cucereşte astfel pentru a cincea oară titlul de campion mondial, pe care îl deţine fără întrerupere din 2013.
+Numărul 1 mondial în clasamentul pe puncte, favorit al meciului, a pus capăt calvarului lui Nepomniaci, care a pierdut meciul de vineri după 49 de mutări şi trei ore şi 20 de minute. După cinci remize în primele meciuri, norvegianul a deblocat situaţia câştigând cel mai lung meci disputat la un Campionat Mondial de şah, după 136 de mutări şi aproape opt ore de luptă.
+El a profitat apoi fără milă de cadourile făcute de challenger-ul său, care a gafat de trei ori în rundele următoare.Norvegianul de 31 de ani marchează şi mai mult istoria sportului său şi este la o singură lungime de recordul de victorii în Campionatul Mondial, stabilit de germanul Emanuel Lasker la începutul secolului XX.
+Ruşii Gari Kasparov şi Anatoli Karpov au şi ei şase victorii în Campionatul Mondial, însă unele au fost obţinute când existau două circuite, ceea ce nu s-a întâmplat în cazul lui Magnus Carlsen.',TO_DATE('11/12/2022','DD/MM/YYYY'),1,1);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Gala Excelentei','🏵GALA EXCELENȚEI ASE, ediția a V-a Joi, 9 decembrie a.c., vă invităm la cea de-a V-a ediție a Galei Excelenței ASE. În cadrul acestui eveniment de tradiți, vor fi acordate 10 premii de excelență membrilor comunități universitare (profesori, studenți și personal administrativ) pentru realizările acestora de odin științific și profesional din ultimul an. Evenimentul v tasmis live pe facebook, începând cu ora 10:00'
+,TO_DATE('08/12/2022','DD/MM/YYYY'),1,10);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Informare meteo 11 – 13 decembrie: ploi și ninsori moderate cantitativ, strat de zăpadă și viscol în zona montană, intensificări ale vântului','Fenomene vizate: ploi și ninsori moderate cantitativ, strat de zăpadă și viscol în zona montană, intensificări ale vântului
+Interval de valabilitate: 11 decembrie, ora 14:00 – 13 decembrie, ora 08:00
+
+În intervalul menționat, temporar vor fi precipitații în cea mai mare parte a țării. În cursul după-amiezii de sâmbătă (11 decembrie) va ploua mai ales în regiunile sudice, iar în noaptea de sâmbătă spre duminică (11/12 decembrie) și în restul teritoriului. La munte vor fi precipitații mixte, dar treptat în cursul nopții la altitudini de peste 1500 m, vor predomina ninsorile și se va depune strat nou de zăpadă.
+
+Începând de duminică (12 decembrie) în regiunile vestice și sud-vestice treptat vor predomina ninsorile și se va depune strat de zăpadă, iar la munte local va ninge abundent.
+
+Precipitațiile vor fi moderate cantitativ, iar pe tot parcursul intervalului se vor acumula în general 15…25 l/mp și, în special în zonele deluroase și montane, peste 40…50 l/mp.
+
+Temporar în regiunile vestice, sudice și la munte vântul va avea intensificări cu viteze în general de 45…55 km/h, iar pe creste rafalele vor depăși 80…90 km/h, viscolind ninsoarea și spulberând zăpada.',TO_DATE('12/12/2022','DD/MM/YYYY'),1,8);
+
+
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Apple lansează iPhone 13. Varianta PRO va avea 1TB. Prețuri și imagini cu noile modele','Cele mai scumpe modele ale viitoarei serii de iPhone vor oferi, pentru prima oară, o versiune cu 1TB spaţiu de stocare.
+
+Noua serie este compusă din patru telefoane. În ordinea dotărilor şi a preţurilor, acestea sunt iPhone 13 mini, iPhone 13, iPhone 13 Pro şi iPhone 13 Pro Max.
+
+Conform Apple, ecranul noilor iPhone-uri are 800 de nits, fiind cu 28% mai luminos decât versiunea anterioară.
+
+Din punctul de vedere al designului, noua serie se remarcă printr-un breton cu 20% mai mic. Pe de o parte, acesta va fi apreciat de utilizatori, care vor beneficia de un ecran mai mare. Pe de altă parte, dezvoltatorii vor avea de făcut modificări la interfeţele grafice ale aplicaţiilor şi jocurilor.
+
+Dincolo de construcţie, unele dintre cele mai notabile noutăţi vizează partea foto. Există o nouă cameră de ultrawide de 12MP, cu o apertură de f/1.5, despre care Apple spune cu că primeşte cu 47% mai multă lumină.de camera, scrie news.ro.
+
+Noua cameră tele are 12MP, o apertură de f/2.4, cu un câmp vizual de 120 de grade,
+
+La baza noii generaţii de iPhone stă chipset-ul A15 Bionic, cu 6 nuclee construit pe un proces de 5nm. Apple spune că acesta este cu 50% mai rapid decât procesoarele şi 30% mai rapid decât soluţiile grafice ale competiţie.
+
+iPhone 13 mini (5,4 inch) şi iPhone 13 (6,1 inch) vor oferi o autonomie mai mare cu 1,5 ore respectiv 2,5 ore decât versiunile anterioare. Cele două modele vor costa începând de la 699 dolari şi 799 dolari.
+
+iPhone 13 Pro (6,1 inch) şi Pro Max (6,7 inch) au ecrane cu rată variabilă de refresh, ce poate oscila între 10Hz şi 120Hz, în funcţie de conţinutul afişat.
+
+Sistemul foto al modelelor Pro include o cameră tele de 77mm, care facilitează un zoom optic total de 6X şi o cameră macro.
+
+Autonomia lui iPhone 13 Pro este cu 1,5 ore mai mare. În cazul lui iPhone 13 Pro Max, autonomia va creşte cu 2,5 ore, promite Apple.
+
+iPhone 13 Pro va costa de la 999 dolari, iar iPhone 13 Pro Max de la 1099 dolari.
+
+Stocarea noilor iPhone-uri începe de la 128GB şi merge până la 512MB, cu opţiunea de 1TB rezervată pentru versiunile Pro.
+
+Toate cele patru modele ale seriei iPhone 13 vor fi disponibile din 24 septembrie.'
+,TO_DATE('08/12/2022','DD/MM/YYYY'),1,10);
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Nou record negru în Franţa, în plină pandemie!',' Marţi, 11 ianuarie, autorităţile de la Paris au raportat 368.149 de noi cazuri de coronavirus, cel mai mare bilanţ zilnic al îmbolnăvirilor de la începutul pandemiei.
+
+Miercurea trecută, Franța atingea un alt record cu 332.252 de noi persoane infectate cu Sars-CoV-2, apoi, în următoarele două zile, autoritățile franceze au înregistrat peste 300.000 de cazuri noi.
+
+Marți, 11 ianuarie, media săptămânală de infectări a ajuns aproape la 280.000, potrivit Reuters.
+
+De asemenea, anterior, Franța a adoptat, în primă lectură, un proiect de lege care prevede transformarea certificatului sanitar în certificat de vaccinare. Proiectul de lege a fost adoptat cu 214 voturi și urmează să meargă la Senat.',TO_DATE('12/01/2022','DD/MM/YYYY'),1,1);
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Potrivit ultimelor informații, Codul rutier 2022 vine cu o serie de interdicții pentru anumite persoane.',' Începând cu 1 ianuarie 2022, cei care nu au terminat cel puțin zece clase nu vor mai putea să dea examenul pentru a obține permisul de conducere.
+
+Mai exact, începând cu luna ianuarie a acestui an, pentru a se înscrie la școala de șoferi, candidații vor avea nevoie de dovada absolvirii a zece clase, alături de restul actelor personale.',TO_DATE('12/01/2022','DD/MM/YYYY'),1,1);
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Transmiterea comunitară a Omicron în România este confirmată de Institutul Național de Sănătate Publică.','
+
+Până pe 9 ianuarie, au fost raportate la INSP-CNSCBT 8.414 secvențieri, din care 328 în prima săptămână.
+
+Au fost confirmate 7.808 cazuri cu variante ale SARS-CoV-2 care determină îngrijorare (VOC), din care Alpha – 1.722, Beta – 11, Gamma – 23, Delta – 5. 757 și Omicron – 295.
+
+Până la data de 9 ianuarie, rata de confirmare cu variante ale SARS-CoV-2 care determină îngrijorare a fost de 93%.',TO_DATE('12/01/2022','DD/MM/YYYY'),1,1);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'”Ziua Națională Constantin Brâncuși” si ce reprezinta ea','De câțiva ani ”Ziua Națională Constantin Brâncuși” înseamnă un șir interminabil de postări pe rețele de socializare în care este reprodus un text despre cum sculptorul a vrut să doneze operele sale statului român, dar comuniștii au refuzat cadoul de importanță istorică.'
+
+,TO_DATE('22/02/2023','DD/MM/YYYY'),1,10);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Protest in Parlament','Partidul AUR pregătește un protest împotriva președintelui Klaus Iohannis, pentru duminică, în Piața Universității din București. Reprezentanții formațiunii cer adoptarea urgentă a unui plan de zece măsuri.'
+
+,TO_DATE('12/02/2023','DD/MM/YYYY'),1,13);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Cutremur neasteptat','Marți după-amiaza, un nou cutremur a fost înregistrat în zona seismică Vrancea. Potrivit informațiilor oferite de Institutului Național de Cercetare-Dezvoltare pentru Fizica Pământului, seismul a avut o magnitudine de 3,2 grade pe scara Richter.'
+
+,TO_DATE('22/04/2023','DD/MM/YYYY'),1,13);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Scandal international','Președinții Comisiei Europene și ai Consiliului European au declarat, marți, 22 februarie, că statele Uniunii Europene vor prezenta în această după-amiază un prim pachet de sancțiuni împotriva Moscovei și au criticat comportamentul Rusiei ca fiind „ilegal și inacceptabil”.'
+
+,TO_DATE('05/10/2023','DD/MM/YYYY'),0,13);
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Evolutia Covid','În ultimele 24 de ore, pe teritoriul României au fost înregistrate peste 14.500 de cazuri noi de infectare cu virusul SARS-CoV-2, care generează boala COVID-19. Peste 200 de români au decedat în urma infectării. Iată situația epidemiologică din România, raportată în urma colectării datelor privind infectarea cu coronavirus în ultimele 24 de ore.'
+
+,TO_DATE('05/10/2023','DD/MM/YYYY'),1,13);
+
+
+
+COMMIT;
+
+
+
+
+SET TRANSACTION NAME 'PopulareMultimedia';
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg):focal(1372x631:1374x629)/origin-imgresizer.eurosport.com/2021/12/07/3267994-66877148-2560-1440.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://scontent.fotp1-1.fna.fbcdn.net/v/t31.18172-8/23847222_1580010345387900_2832534205806220627_o.jpg?_nc_cat=108&ccb=1-5&_nc_sid=cdbe9c&_nc_ohc=fCM6YycgLYoAX-ZjO4s&tn=KXGkRXkXXYZcJS4q&_nc_ht=scontent.fotp1-1.fna&oh=00_AT85h1eyu9Ei5H6dhgAuZKSOfeQeZ7YrrXRQdbvg2g38Gw&oe=62314F60', 'imagine', 0);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://www.presasm.ro/wp-content/uploads/2017/12/zapada.jpg','imagine',0);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://teinspir.com/wp-content/uploads/2021/07/iphone-13-rru-main_thumb1200_4-3.png','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://s.iw.ro/gateway/g/ZmlsZVNvdXJjZT1odHRwJTNBJTJGJTJG/c3RvcmFnZTA0dHJhbnNjb2Rlci5yY3Mt/cmRzLnJvJTJGc3RvcmFnZSUyRjIwMjIl/MkYwMSUyRjA0JTJGMTQzODQ2MF8xNDM4/NDYwX2ZyYW50YS5qcGcmdz03ODAmaD00/NDAmaGFzaD04ZjEwNGViNjU0NzIyM2U4OTg1OGZkNjkyODU1NWNjYw==.thumb.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://www.capital.ro/wp-content/uploads/2021/08/dreamstime_m_38250402-1536x1024.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://media.hotnews.ro/media_server1/image-2021-11-29-25212312-41-varianta-omicron.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://media.evz.ro/wp-content/uploads/2021/02/Constantin-Brancusi-1536x866.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://media.evz.ro/wp-content/uploads/2022/02/Klaus-Iohannis_presidency.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://media.evz.ro/wp-content/uploads/2022/01/cutremur-in-romania-sambata-9-ianuarie-1024x576-1-1024x576-2-1536x864.jpg','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://media.evz.ro/wp-content/uploads/2022/02/UE-Rusia-1536x1024.jpg','imagine',0);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://media.evz.ro/wp-content/uploads/2022/01/Covid-omicron_RzV-1536x1023.jpg','imagine',1);
+
+COMMIT;
+
+
+SET TRANSACTION NAME 'PopulareCONEXIUNI_STIRI_MULTIMEDIA';
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(1,1);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(2,2);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(3,3);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(4,4);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(5,5);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(6,6);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(7,7);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(8,8);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(9,9);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(10,10);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(11,11);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(12,12);
+COMMIT;
+
+
+
+
+SET TRANSACTION NAME 'PopulareCOMENTARII';
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Este o stire foarte bine structurata. Imi place acest site de stiri!', TO_DATE('13/03/2023', 'DD/MM/YYYY'), 1, 1, 1);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Fiind pasionat de sah, consider ca aceasta stire este una foarte importanta, pentru ca ne pune la curent cu o mare realizare a lui MAGNUS CARLSEN', TO_DATE('12/12/2022', 'DD/MM/YYYY'), 1, 2, 1);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Fiind student la ASE, am uramrit cu mare placere Gala Excelentei ASE', TO_DATE('20/04/2022', 'DD/MM/YYYY'), 1, 2, 2);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Sper ca voi putea sa iau si eu macar nu premiu in cadrul Galei Excelentei de la ASE', TO_DATE('21/03/2022', 'DD/MM/YYYY'), 1, 3, 2);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Voi concura si eu la anul si sper ca pot castiga premiul pentru cel mai activ voluntar', TO_DATE('24/01/2022','DD/MM/YYYY'), 1, 4, 2);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'A fost foarte frumos. Am participat live pe facebook', TO_DATE('04/01/2023','DD/MM/YYYY'), 1, 6, 2);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Sper ca va fi vreme buna, pentru ca am planuri.', TO_DATE('02/12/2022','DD/MM/YYYY'), 1, 4, 3);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Intentionam sa plec la munte, sper sa fie totusi ok si sa putem sa ne bucuram de natura', TO_DATE('03/12/2022','DD/MM/YYYY'), 1, 6, 3);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Cred ca de fapt va fi o vreme buna si ca ne vom distra foarte bine la munte de ziua prietenului meu', TO_DATE('04/12/2022','DD/MM/YYYY'), 1, 5, 3);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'De abia astept sa cumpar noul iPhone 13, sunt fan forate mare Apple', TO_DATE('10/01/2023','DD/MM/YYYY'), 1, 6, 4);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'De abia astept sa cumpar iPhone 13 PRO MAX', TO_DATE('15/01/2023','DD/MM/YYYY'), 1, 6, 4);
+INSERT INTO COMENTARII(id_comentariu, continut, data_comentariu, stare_comentariu, id_utilizator, id_stire) VALUES (incr_id_comentariu.nextval, 'Sper sa fie o diferenta clara intre iPhone 12 si iPhone 13', TO_DATE('20/01/2023','DD/MM/YYYY'), 1, 2, 4);
+COMMIT;
+
+
+
+
+SET TRANSACTION NAME 'PopulareAutori';
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Tolstoy','Leonardo', 'tolstoy@gmail.com', 'tolstoy123', sysdate,1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'King','Stephen', 'king@gmail.com', 'king123', TO_DATE('10 aug 2015','dd mon yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Dickens','Charles', 'dickens@gmail.com', 'dickens123', TO_DATE('10 aug 2015','dd mon yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Kiyosaki',' Robert', 'kiyosaki@gmail.com', 'kiyosaki123', TO_DATE('15 jun 2017','dd mon yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Lechter','Sharon', 'lechter@gmail.com', 'lechter123', TO_DATE('21 november 2020','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Clear','James', 'clear@gmail.com', 'clear123', TO_DATE('30 dec 2020','dd mon yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Covey','Stephen', 'covey@gmail.com', 'covey123', TO_DATE('15 aug 2018','dd mon yyyy'),0);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Carnegie','Dale', 'carnegie@gmail.com', 'carnegie123', TO_DATE('21 july 2017','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Hill','Napoleon ', 'hill@gmail.com', 'hill123', TO_DATE('15 september 2019','dd month yyyy'),0);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Truman','Capote ', 'truman@gmail.com', 'truman123', TO_DATE('15 mar 2019','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Creanga','Alexandru ', 'creanga@gmail.com', 'creanga123', TO_DATE('21 july 2012','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Eminescu','Mihail ', 'eminescu@gmail.com', 'eminescu123', TO_DATE('14 feb 2015','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, ' Creanga','Ion ', 'creangaion@gmail.com', 'creangaion123', TO_DATE('15 feb 2017','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Popescu','Alexandru ', 'popescu@gmail.com', 'popescu123', TO_DATE('17 feb 2018','dd month yyyy'),1);
+insert into autori(id_autor,nume,prenume, email, parola, data_inregistrarii,stare_autor) values(incr_id_autor.nextval, 'Matei','Rares', 'matei@gmail.com', 'matei123', TO_DATE('12 mar 2013','dd month yyyy'),1);
+COMMIT;
+
+
+
+SET TRANSACTION NAME 'PopulareConexiuneAutoriStiri';
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (1,1);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (1,2);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (1,4);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (2,1);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (3,1);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (4,3); 
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (2,4);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (6,3); 
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (5,2);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (7,4); 
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (9,5);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (8,4);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (10,6);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (11,7);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (12,8);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (13,9);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (14,10);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (15,11);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (12,12);
+COMMIT;
+
+
+
+
+
+
+
+
+SET TRANSACTION NAME 'Populare';
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Directorul SRI România: Atacurile cibernetice, spionajul şi fenomenul fake-news s-au intensificat','Eduard Hellvig a prezentat, la solicitarea Comisiei, o analiză de securitate din perspectiva atribuţiilor legale ale SRI şi în contextul situaţiei tensionate din Ucraina. În cadrul şedinţei, Directorul SRI a evidenţiat faptul că atacurile cibernetice, activităţile de spionaj şi cele asociate fenomenului „fake news" s-au intensificat în ultima perioadă, dat fiind contextul regional”, transmite SRI într-un comunicat de presă.
+
+Hellvig a prezentat membrilor Comisiei Parlamentare de Control şi o analiză privind riscurile de securitate la care ar putea fi expusă România în perioada următoare în funcţie de factorii externi.„Membrilor Comisiei li s-a subliniat importanţa şi reala necesitate a actualizării pachetului de legi privind securitatea naţională, cu atât mai mult cu cât mediul regional de securitate este într-o dinamică continuă. SRI a informat consistent şi timpuriu beneficiarii legali, potrivit competenţelor prevăzute de lege, pe subiectele discutate în cadrul acestei şedinţe şi îşi reiterează determinarea de a continua să lucreze în interesul statului român şi al cetăţenilor săi, în strânsă legătură cu celelalte instituţii abilitate pentru prezervarea securităţii naţionale”, se mai arată în comunicat.'
+,TO_DATE('22/02/2022','DD/MM/YYYY'),1,7);
+
+
+
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Nivelurile taxelor şi impozitelor în Capitală începând cu 2023, în dezbatere publică','Primăria Generală a Capitalei a pus în dezbatere publică Proiect de hotărâre privind stabilirea nivelurilor impozitelor şi taxelor locale în Municipiul Bucureşti, începând cu anul 2023.
+
+”Potrivit legislaţiei în vigoare, autorităţile locale au obligaţia legală să modifice taxele şi impozitele anual, până la 30 aprilie, în funcţie de indicele de inflaţie. În acest sens, în acord cu prevederile Legii nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, Consiliul General al Municipiului Bucureşti adoptă hotărâri privind impozitele şi taxele locale pentru anul fiscal următor. Având în vedere faptul că prevederea legală este imperativă, instituţia noastră a pus în dezbatere publică proiectul de impozite şi taxe locale pe anul 2023 care prevede indexarea nivelurilor impozitelor şi taxelor locale cu un coeficient de inflaţie de 5,1%”, potrivit unui comunicat de presă.'
+,TO_DATE('25/12/2021','DD/MM/YYYY'),1,3);
+
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Jaquelin Cristian s-a retras de la Doha. Care a fost motivul din spatele deciziei','Jaqueline Cristian şi-a adjudecat cu 6-2, în mod entuziasmant, un prim set în care a câştigat de 4 ori pe serviciul adversarei, dar la şi cedat de două ori pe cel propriu.
+
+În setul secund, la 1-1, Kasatkina a reuşit un break, contracarat imediat de româncă. La 2-2 şi 30-30 în game, Criatian s-a accidentat la genunchi şi după câteva minute, cu un bandaj elastic, a încercat să revină, însă durerile au fost prea mari, ea abandonând după o oră şi 6 minute de joc.Pentru prezenţa în şaisprezecimile de finală, Jaqueline Cristian va fi primi 15.080 dolari şi 60 de puncte WTA şi ar putea avansa 5 sau chiar 6 locuri în clasamentul mondial, până pe 65.'
+,TO_DATE('22/11/2021','DD/MM/YYYY'),1,1);
+
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Inteligenţa artificială salvează animalele sălbatice. Soluţia pentru criza biodiversităţii şi pentru a atenua schimbările climatice','Un raport recent realizat de Wildlabs.net a constatat că AI este una dintre cele trei tehnologii emergente de top în domeniul conservării. Raportul notează că, de la capcanele pentru camere şi imaginile prin satelit la înregistrările audio: „Inteligenţa artificială poate învăţa cum să identifice ce fotografii din mii de fotografii conţin specii rare; sau cum să identifice un apel de animal din ore de înregistrări de teren - reducând enorm munca manuală necesară pentru a colecta date vitale pentru conservare”.nteligenţa artificială ajută la protejarea unor specii atât de diverse precum balenele cu cocoaşă, koala şi leoparzii zăpezilor, sprijinind activitatea oamenilor de ştiinţă, a cercetătorilor şi a rangerilor în sarcini vitale, de la patrule antibraconaj la monitorizarea speciilor. Cu ajutorul sistemelor informatice de învăţare automată (ML), care utilizează algoritmi şi modele pentru a învăţa, înţelege şi adapta, AI este adesea capabilă să facă munca a sute de oameni, obţinând rezultate mai rapide, mai ieftine şi mai eficiente, potrivit The Guardian.
+ 
+Iată cinci proiecte de inteligenţă artificială care contribuie la înţelegerea biodiversităţii şi a speciilor:
+Oprirea braconierilor
+Parcul naţional Kafue din Zambia găzduieşte peste 6.600 de elefanţi africani de savană şi se întinde pe o suprafaţă de 22.400 km², astfel încât oprirea braconajului reprezintă o mare provocare logistică. Pescuitul ilegal în lacul Itezhi-Tezhi, la graniţa parcului, reprezintă, de asemenea, o problemă, iar braconierii se deghizează în pescari pentru a intra şi a ieşi din parc fără a fi detectaţi, adesea la adăpostul întunericului.
+ 
+Iniţiativa de conservare conectată, realizată de Game Rangers International (GRI), Departamentul parcurilor naţionale şi al vieţii sălbatice din Zambia şi alţi parteneri, utilizează inteligenţa artificială pentru a spori eforturile convenţionale de combatere a braconajului, creând un gard virtual de 19 km de lungime peste lacul Itezhi-Tezhi. Camerele termice cu infraroşu cu vedere înainte (FLIR) înregistrează fiecare barcă care intră şi iese din parc, zi şi noapte.
+ 
+„De mult timp, resursele pentru securizarea zonelor protejate au fost insuficiente, iar faptul de a pune oameni să supravegheze mai multe camere de luat vederi 24 de ore din 24, 7 zile din 7, nu este o măsură suficientă", spune Ian Hoad, consilier tehnic special la GRI. „AI poate schimba situaţia, deoarece poate monitoriza trecerile ilegale cu barca şi poate alerta imediat echipele de rangerii. Tehnologia a permis unei mâini de rangeri să asigure supravegherea non-stop a unui punct de intrare ilegală masivă pe lacul Itezhi-Tezhi”.
+Urmărirea pierderilor de apă
+Brazilia a pierdut mai mult de 15% din apa de suprafaţă în ultimii 30 de ani, o criză care a ieşit la iveală doar cu ajutorul IA. Râurile, lacurile şi zonele umede ale ţării s-au confruntat cu o presiune tot mai mare din cauza creşterii populaţiei, a dezvoltării economice, a defrişărilor şi a agravării efectelor crizei climatice. Însă nimeni nu cunoştea amploarea problemei până în august anul trecut, când, cu ajutorul ML, proiectul privind apa MapBiomas şi-a publicat rezultatele după ce a procesat peste 150.000 de imagini generate de sateliţii Landsat 5, 7 şi 8 ai Nasa din 1985 până în 2020 pe o suprafaţă de 8,5 milioane de kilometri pătraţi de pe teritoriul brazilian.
+ '
+,TO_DATE('26/07/2021','DD/MM/YYYY'),1,7);
+
+
+INSERT INTO STIRI (ID_STIRE,NUME_STIRE,CONTINUT_STIRE,DATA_POSTARII,STARE_STIRE,ID_CATEGORIE) VALUES (incr_id_stire.nextval,'Continuă necazurile pentru Elon Musk. Furtuna solară i-a distrus sateliţii recent lansaţi','Nu este un moment prea bun pentru Elon Musk, proprietarul miliardarului Tesla. Acţiunile de pe bursă nu merg prea bine, o bucată din racheta sa Falcon 9 este pe cale să se prăbuşească pe Lună şi 40 din cei 49 de sateliţi Starlink pe care i-a lansat săptămâna trecută de la Centrul Spaţial Kennedy au fost loviţi de o furtună geomagnetică şi se vor prăbuşi pe Pământ, dezintegrându-se.
+
+Aproximativ 40 de sateliţi nu sunt mulţi, având în vedere că Musk a lansat deja cu succes 2.000 şi intenţionează să trimită alţi 10.000 pe orbită. Acestea vor servi la îmbunătăţirea conexiunilor la internet. Însă mulţi oameni de ştiinţă nu au ascuns un zâmbet de satisfacţie la vestea că ultima lansare a eşuat cu 80%. De câteva luni, ei spun că Starlink este un proiect nebun, care va umple orbita joasă a Pământului cu sateliţi care vor provoca refracţii care va slăbi întunericul nopţii.
+Sateliţii lui Musk sunt foarte mici, uşori şi pot fi trimişi în spaţiu cu o singură lansare. Tocmai dimensiunea lor mică îi face mai sensibili la furtunile geomagnetice cauzate de Soare. Vântul solar este un flux neîntrerupt de particule constând în esenţă din protoni şi electroni care interacţionează cu câmpul magnetic al Pământului, determinând încălzirea şi creşterea atmosferei, a densităţii la „altitudinile joase” în care sunt dislocaţi sateliţii.'
+,TO_DATE('08/12/2022','DD/MM/YYYY'),1,7);
+
+
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://storage0.dms.mpinteractiv.ro/media/1/1/1688/20543017/1/profimedia-0468574174.jpg?width=560','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://storage0.dms.mpinteractiv.ro/media/1/1/1686/20542620/1/bani-lei-andrei-spirache.jpg?width=560','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://storage0.dms.mpinteractiv.ro/media/1/1/1689/20542779/1/jaqueline-cristian.jpg?width=560','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://storage0.dms.mpinteractiv.ro/media/1/1/38046/20539559/1/ai.jpg?width=560','imagine',1);
+INSERT INTO MULTIMEDIA (id_multimedia, URL, TIP_MULTIMEDIA, VIZIBILITATE) VALUES (incr_id_multimedia.nextval,'https://storage0.dms.mpinteractiv.ro/media/1/1/38046/20516314/1/elon-musk.jpg?width=560','imagine',1);
+
+
+
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(13,13);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(14,14);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(15,15);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(16,16);
+insert into CONEXIUNE_STIRI_MULTIMEDIA(ID_STIRE,ID_MULTIMEDIA) VALUES(17,17);
+
+
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (5,13);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (8,14);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (7,15);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (1,16);
+insert into Conexiune_Autori_Stiri(id_autor,id_stire) values (8,17);
+
+COMMIT;
+
+
+
+
+
+
+
+
